@@ -1,2 +1,8 @@
 # spring-cloud
-Spring Cloud examples
+Project demostrating the user of Spring Cloud services
+
+## Services
+
+service-discovery: embedded Eureka server
+
+
