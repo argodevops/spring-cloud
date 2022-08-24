@@ -53,6 +53,7 @@ public class Post {
 
   public Integer getOwner() {
     // In future could return a User object matching the given ID
+    // crudRepository has method findById(id)
     return this.owner_id;
   }
 

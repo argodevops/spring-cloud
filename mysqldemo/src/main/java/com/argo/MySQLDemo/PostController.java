@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
 
-@RestController
+@Controller
 @RequestMapping(path = "post/")
 public class PostController {
 
@@ -21,8 +22,9 @@ public class PostController {
   private PostRepository postRepository;
 
   @GetMapping("")
+  @ResponseBody
   public String postIndex() {
-    return "You can <a href='/feed'>view all posts</a> or <a href='/add'>create a new one</a>.";
+    return "You can <a href='/view/feed'>view all posts</a> or <a href='/view/create'>create a new one</a>.";
   }
 
   @GetMapping(path = "feed")
@@ -38,6 +40,7 @@ public class PostController {
   */
 
   @GetMapping(path = "view/{id}")
+  @ResponseBody
   public String viewPost(
     @RequestParam(name = "id", required = false, defaultValue = "0") String id
     // Tried to do as a path variable instead but currently fails on parseInt and escapeHtml package doesn't seem to exist
@@ -56,8 +59,26 @@ public class PostController {
     return "You are viewing post " + id;
   }
 
-  @PostMapping(path = "add")
-  public String createPost() {
-    return "Post saved!";
+  // User interface to create a post
+  @GetMapping(path = "create")
+  public String postForm(Model model) {
+    return "createPostForm";
+  }
+
+  // Adds a post from a POST request
+  @PostMapping(path = "/add")
+  public @ResponseBody String addPost(
+    @RequestParam String title,
+    @RequestParam String body,
+    @RequestParam Integer owner_id
+  ) {
+    // We want to escape HTML for these values too
+    Post p = new Post();
+    p.setTitle(title);
+    p.setBody(body);
+    // parseInt on owner_id ? (wasn't necessary)
+    p.setOwner(owner_id);
+    postRepository.save(p);
+    return "Post <i>" + title + "</i> has been saved! Would you like to <a href='/view/feed'>view all posts</a>?";
   }
 }
