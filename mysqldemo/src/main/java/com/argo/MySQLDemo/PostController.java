@@ -1,4 +1,4 @@
-package com.argo.MySQLDemo.controller;
+package com.argo.MySQLDemo;
 
 import java.util.Optional;
 //import org.apache.commons.text.StringEscapeUtils;
@@ -17,14 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "post/")
 public class PostController {
 
+  @Autowired
+  private PostRepository postRepository;
+
   @GetMapping("")
   public String postIndex() {
     return "You can <a href='/feed'>view all posts</a> or <a href='/add'>create a new one</a>.";
   }
 
   @GetMapping(path = "feed")
-  public String getAllPosts() {
-    return "Here are all the latest blog posts";
+  public @ResponseBody Iterable<Post> getAllPosts() {
+    return postRepository.findAll();
   }
 
   /*

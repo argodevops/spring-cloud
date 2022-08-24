@@ -1,4 +1,4 @@
-package com.argo.MySQLDemo.controller;
+package com.argo.MySQLDemo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
