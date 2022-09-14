@@ -1,0 +1,13 @@
+<nav class="navbar" th:fragment="navbar">
+    <a class="navbar-brand" href="#"><img class="nav-logo" src="/images/argo-logo-trans.png" alt="Argo DevOps" label="Argo Devops" /></a>
+    <div class="navbar-item" th:each="menu : ${menus}">
+        <a class="navbar-link" th:href="${menu.url}" th:text="${menu.label}"></a>
+    </div>
+    
+    <div class="navbar-menu">
+        <li><a th:href="@{/}">Index</a></li>
+        <li><a th:href="@{/post/}">Post Index</a></li>
+        <li><a th:href="@{/post/feed/}">View Posts</a></li>
+        <li><a th:href="@{/post/create/}">Create a Post</a></li>
+    </div>
+</nav>

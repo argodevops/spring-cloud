@@ -1,0 +1,21 @@
+<div th:replace="fragments/full-open"></div>
+
+<form id="pform" method="POST" th:action="@{/post/add}">
+    <p>
+        <label for="ptitle">Post title:</label>
+        <input name="title" id="ptitle" type="text" value="Title" />
+    </p>
+    <p>
+        <label for="pbody">Post body:</label>
+        <textarea name="body" form="pform" id="pbody" type="text">Post body</textarea>
+    </p>
+    <p>
+        <label for="powner">Author ID:</label>
+        <input name="owner_id" id="powner" type="number" value="0" min="0" max="99" />
+    </p>
+    <p>
+        <input type="submit" value="Create Post" />
+    </p>
+</form>
+
+<div th:replace="fragments/full-close"></div>

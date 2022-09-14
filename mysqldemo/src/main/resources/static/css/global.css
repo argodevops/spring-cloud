@@ -1,0 +1,38 @@
+.nav-logo {
+    max-height: 80px;
+}
+
+body {
+    background-color: cadetblue;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: navy;
+}
+
+.common-box {
+    background-color: gainsboro;
+    margin: 5%;
+    padding: 2%;
+    text-align: center;
+}
+
+.body-head-container {
+
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+footer {
+    text-align: center;
+}
+
+a:visited {
+    color: navy;
+}
+
+button {
+    max-width: 30px;
+}

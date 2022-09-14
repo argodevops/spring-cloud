@@ -22,9 +22,8 @@ public class PostController {
   private PostRepository postRepository;
 
   @GetMapping("")
-  @ResponseBody
-  public String postIndex() {
-    return "You can <a href='/view/feed'>view all posts</a> or <a href='/view/create'>create a new one</a>.";
+  public String postIndex(Model model) {
+    return "pages/postIndex";
   }
 
   @GetMapping(path = "feed")
@@ -62,7 +61,7 @@ public class PostController {
   // User interface to create a post
   @GetMapping(path = "create")
   public String postForm(Model model) {
-    return "createPostForm";
+    return "pages/createPostForm";
   }
 
   // Adds a post from a POST request
@@ -79,6 +78,6 @@ public class PostController {
     // parseInt on owner_id ? (wasn't necessary)
     p.setOwner(owner_id);
     postRepository.save(p);
-    return "Post <i>" + title + "</i> has been saved! Would you like to <a href='/view/feed'>view all posts</a>?";
+    return "Post <i>" + title + "</i> has been saved! Would you like to <a href='feed'>view all posts</a>?";
   }
 }

@@ -1,0 +1,65 @@
+<div th:replace="fragments/full-open"></div>
+
+<script type="text/javascript">
+    const postTemplate = (id, title, body, authorID) => {
+        console.log('Post template called for '+title);
+        return `<div class="post" id="post-${id}">
+            <h1 class="post-title">${title}</h1>
+            <p class="post-subtitle">By Author ${authorID}</p>
+            <div class="post-body">
+                ${body}
+            </div>
+        </div>
+        `;
+    };
+
+    const getPosts = (outputNode, noPostNode) => {
+        $.ajax({
+            url: "feed",
+            dataType: 'json',
+        }).done((postObject) => {
+            if(postObject.length<=0){return;};
+            console.log('noPostNode is:');
+            console.log(noPostNode);
+            //noPostNode.remove();
+            // Need to empty current slot of posts first...
+            const posts = postObject.values();
+            for (var pindex in postObject) {
+                const post = postObject[pindex];
+                //console.log('Evaluating post #'+post.id);
+                if(!post.body){continue;};
+                //console.log('Continued');
+                outputNode.append(postTemplate(post.id, post.title, post.body, post.owner));
+                //outputNode.replaceChildren(...);
+            };
+        });
+    };
+</script>
+
+<p>Here, you can get the <a href="feed">JSON feed</a> for posts, or <a href="create">create a new one</a>.</p>
+<p>See the latest posts below:</p>
+
+<h1>Latest Posts</h1>
+<button onclick="getPosts();">Refresh</button>
+
+<section id="post-list" class="common-box">
+    <div id="no-posts">Sorry, no posts were found.</div>
+</section>
+
+<script type="text/javascript">
+    /*
+    const postBlock = $('#post-list');
+    const noPosts = $('#no-posts');
+
+    console.log("With jQuery elements:");
+    getPosts(postBlock, noPosts);
+    */
+
+    const np = document.getElementById('no-posts');
+    const pl = document.getElementById('post-list');
+
+    console.log("With DOM elements:");
+    getPosts(np, pl);
+</script>
+
+<div th:replace="fragments/full-close"></div>
