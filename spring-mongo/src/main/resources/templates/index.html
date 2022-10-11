@@ -1,6 +1,27 @@
 <th:block th:insert="fragments/header.html"></th:block>
 
-<div class="content" th:text="${content}">
+<div class="content">
+
+    <div class="task-block">
+        <h1>Top Priority Tasks</h1>
+        <div class="top-priority" th:text="${topPriority}">
+    </div>
+
+    <div class="task-block">
+        <h1>Incomplete Tasks</h1>
+        <div class="all-tasks" th:text="${incompleteTasks}">
+    </div>
+
+    <div class="task-block">
+        <h1>All Tasks</h1>
+        <div class="all-tasks" th:text="${allTasks}"></div>
+    </div>
+
+    <div class="task-block">
+        <h1>Tasks ordered by priority:</h1>
+        <div class="order-priority" th:text="${orderPriority}"></div>
+    </div>
+
 </div>
 
 <th:block th:insert="fragments/footer.html"></th:block>

@@ -17,16 +17,6 @@ public class MainController {
     @Autowired
     public TaskRepository trep;
 
-    public String out;
-    public static String nl = "\r\n";
-
-    public void p(String t) {
-        out = out + nl + t;
-    }
-    public void o(Object t) {
-        p(t.toString());
-    }
-
     @GetMapping("/")
     public String index(Model model) {
 
@@ -47,29 +37,14 @@ public class MainController {
 		trep.save(exercise);
 		trep.save(lunch);
 
-		p("ALL TASKS:");
-		for (Task task : trep.findAll()) {
-			o(task);
-		}
+        model.addAttribute("allTasks", trep.findAll());
 
-        //model.addAttribute("allTasks", trep.findAll());
+        model.addAttribute("orderPriority", trep.findByOrderByPriority());
 
-		p("ALL TASKS ORDERED BY PRIORITY:");
-		for (Task task : trep.findByOrderByPriority()) {
-			o(task);
-		}
+        model.addAttribute("topPriority", trep.findByPriority(PriorityType.TOP));
 
-		p("TOP PRIORITY TASKS:");
-		for (Task task : trep.findByPriority(PriorityType.TOP)) {
-			o(task);
-		}
+        model.addAttribute("incompleteTasks", trep.findByCompleted(false));
 
-		p("INCOMPLETE TASKS:");
-		for (Task task : trep.findByCompleted(false)) {
-			o(task);
-		}
-
-        model.addAttribute("content", out);
         return "index";
     }
 }
