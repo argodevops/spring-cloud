@@ -32,7 +32,7 @@ public class MainController {
     taskService.clearRepository();
     taskService.createSamples();
     taskService.saveSamples();
-    taskService.updateModelWithTasks(model);
+    taskService.updateModelWithFilteredTasks(model);
 
     return "index";
   }

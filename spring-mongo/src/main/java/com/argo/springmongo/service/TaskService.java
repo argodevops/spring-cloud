@@ -16,8 +16,14 @@ public class TaskService {
 
   List<Task> taskSamples = new ArrayList<>();
 
+  public Task emptyTask = new Task();
+
   public void clearRepository() {
     taskRepository.deleteAll();
+  }
+
+  public Task findByid(String id) {
+    return taskRepository.findByid(id);
   }
 
   public void createSamples() {
@@ -44,7 +50,14 @@ public class TaskService {
     }
   }
 
-  public void updateModelWithTasks(Model model) {
+  public void updateModelWithTask(Model model, Task task) {
+    model.addAttribute("id", task.id);
+    model.addAttribute("text", task.text);
+    model.addAttribute("priority", task.priority);
+    model.addAttribute("notes", task.notes);
+  }
+
+  public void updateModelWithFilteredTasks(Model model) {
     model.addAttribute("allTasks", taskRepository.findAll());
 
     model.addAttribute("orderPriority", taskRepository.findByOrderByPriority());

@@ -3,28 +3,31 @@
 <div class="content">
 
     <form action="/todo/task/handle" method="POST" id="task-form">
-        <input type="hidden" id="id" name="id" value="${task.id}" />
-        <input type="text" id="text" value="${task.text}" />
+        <input type="hidden" id="id" name="id" th:value="${id} ?: ''" />
+        <input type="text" id="text" th:value="${text} ?: ''" />
         <label for="id">Task</label>
 
         <fieldset>
             <legend>Priority Level</legend>
-            <input type="radio" id="priority-top" name="priority" value="top" />
+            <!-- TODO: output enum as Thymeleaf list, and automate checking, by using #strings.equalsIgnoreCase(priority, 'normal') 
+            https://frontbackend.com/thymeleaf/thymeleaf-utility-methods-for-strings
+            -->
+            <input type="radio" id="priority-top" name="priority" value="top" th:attrappend="checked=${#strings.toString(priority)=='TOP'}?'true'" />
             <label for="priority-top">Top</label>
-            <input type="radio" id="priority-high" name="priority" value="high" />
+            <input type="radio" id="priority-high" name="priority" value="high" th:attrappend="checked=${#strings.toString(priority)=='HIGH'}?'true'" />
             <label for="priority-high">High</label>
-            <input type="radio" id="priority-normal" name="priority" value="normal" />
+            <input type="radio" id="priority-normal" name="priority" value="normal" th:attrappend="checked=${#strings.toString(priority)=='NORMAL'}?'true'" />
             <label for="priority-normal">Normal</label>
-            <input type="radio" id="priority-low" name="priority" value="low" />
+            <input type="radio" id="priority-low" name="priority" value="low" th:attrappend="checked=${#strings.toString(priority)=='LOW'}?'true'" />
             <label for="priority-low">Low</label>
-            <input type="radio" id="priority-lowest" name="priority" value="lowest" />
+            <input type="radio" id="priority-lowest" name="priority" value="lowest" th:attrappend="checked=${#strings.toString(priority)=='LOWEST'}?'true'" />
             <label for="priority-lowest">Lowest</label>
         </fieldset>
 
-        <textarea id="notes" name="notes" form="task-form">${task.notes}</textarea>
+        <textarea id="notes" name="notes" form="task-form" th:text="${notes} ?: ''"></textarea>
         <label for="task-form">Notes</label>
 
-        <input type="Submit" value="Done" />
+        <input type="Submit" value="Save" />
     </form>
 
 </div>

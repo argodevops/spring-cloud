@@ -1,14 +1,17 @@
 package com.argo.springmongo;
 
 import java.util.Date;
+import lombok.Data;
 
 import org.springframework.data.annotation.Id;
 
+@Data
 public class Task {
 
   @Id
   public String id;
 
+  // TODO: make properties private and update elsewhere to use lombok getters
   public String text;
   public String notes;
   public Boolean completed = false;
