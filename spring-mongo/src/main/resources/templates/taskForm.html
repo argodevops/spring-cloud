@@ -1,0 +1,32 @@
+<th:block th:insert="fragments/header.html"></th:block>
+
+<div class="content">
+
+    <form action="/todo/task/handle" method="POST" id="task-form">
+        <input type="hidden" id="id" name="id" value="${task.id}" />
+        <input type="text" id="text" value="${task.text}" />
+        <label for="id">Task</label>
+
+        <fieldset>
+            <legend>Priority Level</legend>
+            <input type="radio" id="priority-top" name="priority" value="top" />
+            <label for="priority-top">Top</label>
+            <input type="radio" id="priority-high" name="priority" value="high" />
+            <label for="priority-high">High</label>
+            <input type="radio" id="priority-normal" name="priority" value="normal" />
+            <label for="priority-normal">Normal</label>
+            <input type="radio" id="priority-low" name="priority" value="low" />
+            <label for="priority-low">Low</label>
+            <input type="radio" id="priority-lowest" name="priority" value="lowest" />
+            <label for="priority-lowest">Lowest</label>
+        </fieldset>
+
+        <textarea id="notes" name="notes" form="task-form">${task.notes}</textarea>
+        <label for="task-form">Notes</label>
+
+        <input type="Submit" value="Done" />
+    </form>
+
+</div>
+
+<th:block th:insert="fragments/footer.html"></th:block>
