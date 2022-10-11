@@ -28,6 +28,7 @@ public class MainController {
 		Task cleanup = new Task("Tidy the house", PriorityType.LOW);
 		Task exercise = new Task("Go for a run", PriorityType.LOWEST);
 		Task lunch = new Task("Eat lunch", PriorityType.HIGH);
+        tax.notes = "You can apply online to have your tax code changed";
 		tax.complete();
 
 		trep.save(bins);
