@@ -1,5 +1,6 @@
-package com.argo.springmongo;
+package com.argo.springmongo.repository;
 
+import com.argo.springmongo.*;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
