@@ -1,7 +1,10 @@
 package com.argo.springmongo.controller;
 
+import com.argo.springmongo.*;
+import com.argo.springmongo.PriorityType;
+import com.argo.springmongo.repository.*;
+import com.argo.springmongo.service.TaskService;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,17 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.argo.springmongo.PriorityType;
-import com.argo.springmongo.repository.*;
-import com.argo.springmongo.service.TaskService;
-import com.argo.springmongo.*;
-
 @Controller
 @RequestMapping("/todo/task")
 public class TaskController {
 
-  @Autowired
-  public TaskRepository taskRepository;
   public TaskService taskService;
 
   @Autowired
@@ -32,7 +28,8 @@ public class TaskController {
   }
 
   @GetMapping("")
-  public String taskIndex() {
+  public String taskIndex(Model model) {
+    model.addAttribute("incompleteTasks", taskService.getOutstandingByPriority());
     return "taskHome";
   }
 
@@ -42,12 +39,27 @@ public class TaskController {
     return "taskForm";
   }
 
-  @RequestMapping(value="/edit", method = RequestMethod.GET)
+  @RequestMapping(value = "/complete", method = RequestMethod.GET)
+  public String complete(@RequestParam("id") Optional<String> id) {
+    Task task = taskService.findByid(id.get());
+
+    if (!id.isPresent() || task == null) {
+      System.out.println("ERROR: Couldn't find the task to complete");
+      return "redirect:/todo/task?error=3";
+    }
+
+    task.complete();
+    taskService.save(task);
+    return "redirect:/todo/task?success=3"; // success 3: task completed
+  }
+
+  @RequestMapping(value = "/edit", method = RequestMethod.GET)
   public String edit(Model model, @RequestParam("id") Optional<String> id) {
     Task task = taskService.findByid(id.get());
 
     if (!id.isPresent() || task == null) {
-      return "redirect:/todo"; // Send to list of all tasks if no id or not task with id
+      System.out.println("ERROR: Couldn't find the task to edit");
+      return "redirect:/todo/task?error=1"; // Send to list of all tasks if no id or not task with id
     }
 
     // Otherwise, fill in the form with the relevant task data
@@ -56,22 +68,51 @@ public class TaskController {
   }
 
   @GetMapping("/delete")
-  public String delete() {
-    // List of tasks (or not if ID is in GET)
-    // Confirmation dialog for deletion of task with ID
-    // Redirect to list of tasks
-    return "delete";
+  public String delete(@RequestParam("id") Optional<String> id) {
+    // TODO: Confirmation dialog for deletion of task with ID
+
+    Task task = taskService.findByid(id.get());
+
+    if (!id.isPresent() || task == null) {
+      System.out.println("ERROR: Couldn't find the task to delete");
+      return "redirect:/todo/task?error=2";
+    }
+
+    taskService.requestDeletion(task);
+    return "redirect:/todo/task?success=2"; // success 2: task deleted successfully
   }
 
   @PostMapping("/handle")
-  public String handleForm() {
-    // Get in all the values
-    // Check for ID
-    // If no ID, create new task
-    // If ID, check repository for it
-    // If exists, update task
-    // If ID doesn't match repository, give error
-    // Redirect to list of tasks
-    return "handleForm";
+  public String handleForm(
+    @RequestParam("id") Optional<String> id,
+    @RequestParam("text") Optional<String> text,
+    @RequestParam("priority") Optional<String> priority,
+    @RequestParam("notes") Optional<String> notes
+  ) {
+    if (!text.isPresent() || text.get().trim().isEmpty()) {
+      System.out.println("No text passed from taskForm");
+      return "redirect:/todo/task?error=4";
+    }
+
+    Task task = taskService.findByid(id.get());
+
+    if (task == null) {
+      // Create
+      task = new Task(text.get());
+    }
+    // TODO: convert priority to enum
+    //task.setPriority(null);
+    String formPriorityType = priority.get().toUpperCase();
+    try {
+      PriorityType priorityType = PriorityType.valueOf(formPriorityType);
+      System.out.println("Enum valueOf is: " + priorityType);
+      task.setPriority(priorityType);
+    } catch(Exception e) {
+      System.out.println("Could not match priority type; it was: " + formPriorityType);
+    }
+    task.setNotes(notes.get());
+    taskService.save(task);
+
+    return "redirect:/todo/task?success=1"; // success 1: create or update successful ("task saved successfully")
   }
 }

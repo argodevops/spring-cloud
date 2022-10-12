@@ -3,6 +3,10 @@ package com.argo.springmongo.controller;
 import com.argo.springmongo.*;
 import com.argo.springmongo.service.*;
 import com.argo.springmongo.repository.*;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Controller
-@RequestMapping("/todo")
+@RequestMapping({"/todo", "/todo/"})
 public class MainController {
-
-  @Autowired
-  public TaskRepository taskRepository;
 
   TaskService taskService;
 
@@ -28,12 +29,9 @@ public class MainController {
   }
 
   @GetMapping("/")
-  public String index(Model model) {
-    taskService.clearRepository();
-    taskService.createSamples();
-    taskService.saveSamples();
+  public String index(Model model, @RequestParam("error") Optional<String> error, @RequestParam("success") Optional<String> success) {
+    // TODO: handle messaging
     taskService.updateModelWithFilteredTasks(model);
-
     return "index";
   }
 }

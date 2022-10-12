@@ -1,0 +1,84 @@
+body {
+    background-color: dodgerblue;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    overflow-x: hidden;
+}
+
+.content {
+    background-color: #f7faff;
+    margin: 0 auto;
+    width: 60%;
+    margin-top: 2%;
+}
+
+.task-block {
+    padding: 2%;
+}
+
+h1 {
+    font-family: Geneva, Tahoma, sans-serif;
+    font-size: 1.5rem;
+}
+
+table {
+    text-align: center;
+    margin: 0 auto;
+    width: 90%;
+}
+
+.task-column-labels {
+    font-weight: bold;
+}
+
+.header {
+    background-color: #f7faff;
+    border-width: medium;
+    border-style: solid;
+    border-color: #215fcd;
+    padding: 1%;
+    font-size: 1.1rem;
+}
+
+a {
+    color: dodgerblue;
+}
+
+#notes {
+    text-align: justify;
+}
+
+form {
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-segment {
+    padding-top: 2%;
+}
+
+.force-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.force-column {
+    display: flex;
+    flex-direction: column;
+}
+
+fieldset {
+    text-align: center;
+}
+
+input#text {
+    width: 20rem;
+    height: 1.5rem;
+}
+
+textarea {
+    width: 30rem;
+    height: 4rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;;
+}

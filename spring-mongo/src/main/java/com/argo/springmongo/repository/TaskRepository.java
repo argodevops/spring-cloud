@@ -12,4 +12,6 @@ public interface TaskRepository extends MongoRepository<Task, String> {
   List<Task> findByCompleted(Boolean completed);
 
   List<Task> findByOrderByPriority();
+
+  List<Task> findByCompletedOrderByPriorityDesc(Boolean completed);
 }

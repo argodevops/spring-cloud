@@ -9,27 +9,31 @@ import org.springframework.data.annotation.Id;
 public class Task {
 
   @Id
-  public String id;
+  private String id;
 
-  // TODO: make properties private and update elsewhere to use lombok getters
-  public String text;
-  public String notes;
-  public Boolean completed = false;
-  public PriorityType priority = PriorityType.NORMAL;
+  private String text;
+  private String notes;
+  private Boolean completed = false;
+  private PriorityType priority = PriorityType.NORMAL;
+  private Boolean deleted = false;
+  private Date createdDate;
 
   // Advanced options
-  public String location;
-  public Date date;
+  private String location;
+  private Date dueDate;
+  private Date completedDate;
 
   public Task() {}
 
   public Task(String text) {
     this.text = text;
+    this.createdDate = new Date();
   }
 
   public Task(String text, PriorityType priority) {
     this.text = text;
     this.priority = priority;
+    this.createdDate = new Date();
   }
 
   @Override
@@ -43,5 +47,6 @@ public class Task {
 
   public void complete() {
     this.completed = true;
+    this.completedDate = new Date();
   }
 }

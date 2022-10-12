@@ -14,6 +14,7 @@ public class TaskService {
   @Autowired
   TaskRepository taskRepository;
 
+  List<Task> deletedTasks = new ArrayList<>();
   List<Task> taskSamples = new ArrayList<>();
 
   public Task emptyTask = new Task();
@@ -26,6 +27,50 @@ public class TaskService {
     return taskRepository.findByid(id);
   }
 
+  public void save(Task task) {
+    taskRepository.save(task);
+  }
+
+  public void requestDeletion(Task task) {
+    task.setDeleted(true);
+    deletedTasks.add(task);
+    taskRepository.deleteById(task.getId());
+  }
+
+  public void updateModelWithTask(Model model, Task task) {
+    model.addAttribute("id", task.getId());
+    model.addAttribute("text", task.getText());
+    model.addAttribute("priority", task.getPriority());
+    //model.addAttribute("priorityCamel", CaseUtils.toCamelCase(task.getPriority().name(), true));
+    model.addAttribute("notes", task.getNotes());
+  }
+
+  public List<Task> getOutstanding() {
+    return taskRepository.findByCompleted(false);
+  }
+
+  public List<Task> getOutstandingByPriority() {
+    return taskRepository.findByCompletedOrderByPriorityDesc(false);
+  }
+
+  public void updateModelWithFilteredTasks(Model model) {
+    model.addAttribute("allTasks", taskRepository.findAll());
+
+    model.addAttribute("orderPriority", taskRepository.findByOrderByPriority());
+
+    model.addAttribute(
+      "topPriority",
+      taskRepository.findByPriority(PriorityType.TOP)
+    );
+
+    model.addAttribute(
+      "incompleteTasks",
+      getOutstanding()
+    );
+  }
+
+  // Samples
+
   public void createSamples() {
     Task bins = new Task("Take the bins out");
     Task tax = new Task("Apply for wfh tax rebate", PriorityType.TOP);
@@ -33,8 +78,10 @@ public class TaskService {
     Task cleanup = new Task("Tidy the house", PriorityType.LOW);
     Task exercise = new Task("Go for a run", PriorityType.LOWEST);
     Task lunch = new Task("Eat lunch", PriorityType.HIGH);
-    tax.notes = "You can apply online to have your tax code changed";
+    tax.setNotes("You can apply online to have your tax code changed");
     tax.complete();
+
+    taskSamples.clear();
 
     taskSamples.add(bins);
     taskSamples.add(tax);
@@ -50,26 +97,4 @@ public class TaskService {
     }
   }
 
-  public void updateModelWithTask(Model model, Task task) {
-    model.addAttribute("id", task.id);
-    model.addAttribute("text", task.text);
-    model.addAttribute("priority", task.priority);
-    model.addAttribute("notes", task.notes);
-  }
-
-  public void updateModelWithFilteredTasks(Model model) {
-    model.addAttribute("allTasks", taskRepository.findAll());
-
-    model.addAttribute("orderPriority", taskRepository.findByOrderByPriority());
-
-    model.addAttribute(
-      "topPriority",
-      taskRepository.findByPriority(PriorityType.TOP)
-    );
-
-    model.addAttribute(
-      "incompleteTasks",
-      taskRepository.findByCompleted(false)
-    );
-  }
 }
