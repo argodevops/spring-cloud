@@ -58,6 +58,7 @@ public class TaskService {
       getOutstanding()
     );
 
+    model.addAttribute("hasNotes", taskRepository.findByHasNotesCustom());
   }
 
   public Model injectEmptyTaskIntoModel(Model model) {
