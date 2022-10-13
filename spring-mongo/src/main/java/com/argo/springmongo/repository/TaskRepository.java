@@ -19,9 +19,6 @@ public interface TaskRepository extends MongoRepository<Task, String> {
   @Query(value = "{'completed': $0}", delete = true)
   List<Task> deleteByCompletedCustom(Boolean completed);
 
-  //@DeleteQuery ?
-  Task deleteByid(String id);
-
   @Query(
     value = "{$and:[{'notes': {'$ne': null}}, {'notes': {'$ne': ''}}]}"
   )
