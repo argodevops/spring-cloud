@@ -35,6 +35,10 @@ public class TaskService {
     taskRepository.deleteById(task.getId());
   }
 
+  public void deleteByCompletedTrueCustom() {
+    taskRepository.deleteByCompletedTrueCustom();
+  }
+
   public List<Task> getOutstanding() {
     return taskRepository.findByCompleted(false);
   }

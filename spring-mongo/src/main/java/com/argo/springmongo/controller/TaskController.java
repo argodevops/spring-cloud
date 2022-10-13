@@ -112,4 +112,10 @@ public class TaskController {
 
     return "redirect:/todo/task?success=1"; // success 1: create or update successful ("task saved successfully")
   }
+
+  @GetMapping("/deleteCompleted")
+  public String deleteCompleted() {
+    taskService.deleteByCompletedTrueCustom();
+    return "redirect:/todo/task?success=4"; // success 4: successfully deleted completed tasks using custom query
+  }
 }
