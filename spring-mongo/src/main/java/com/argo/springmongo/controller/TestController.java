@@ -10,7 +10,7 @@ import com.argo.springmongo.service.TaskService;
 @RequestMapping({"/todo/test", "/todo/test/"})
 public class TestController {
 
-    public TaskService taskService;
+    private final TaskService taskService;
 
     @Autowired
     public TestController(TaskService taskService) {
@@ -24,8 +24,7 @@ public class TestController {
 
     @GetMapping("/samples")
     public String samples() {
-      taskService.createSamples();
-      taskService.saveSamples();
+      taskService.createAndSaveSamples();
       return "redirect:/todo/?test=1";
     }
 

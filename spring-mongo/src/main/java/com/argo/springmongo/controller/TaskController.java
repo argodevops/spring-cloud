@@ -2,7 +2,6 @@ package com.argo.springmongo.controller;
 
 import com.argo.springmongo.*;
 import com.argo.springmongo.PriorityType;
-import com.argo.springmongo.repository.*;
 import com.argo.springmongo.service.TaskService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequestMapping("/todo/task")
 public class TaskController {
 
-  public TaskService taskService;
+  private final TaskService taskService;
 
   @Autowired
   public TaskController(TaskService taskService) {
@@ -35,7 +32,7 @@ public class TaskController {
 
   @GetMapping("/add")
   public String add(Model model) {
-    taskService.updateModelWithTask(model, taskService.emptyTask);
+    taskService.injectEmptyTaskIntoModel(model);
     return "taskForm";
   }
 
@@ -63,7 +60,7 @@ public class TaskController {
     }
 
     // Otherwise, fill in the form with the relevant task data
-    taskService.updateModelWithTask(model, task);
+    task.injectIntoModel(model);
     return "taskForm";
   }
 
@@ -83,7 +80,7 @@ public class TaskController {
   }
 
   @PostMapping("/handle")
-  public String handleForm(
+  public String handleForm(// Can't I just request a response of type Task ?
     @RequestParam("id") Optional<String> id,
     @RequestParam("text") Optional<String> text,
     @RequestParam("priority") Optional<String> priority,

@@ -2,7 +2,7 @@ package com.argo.springmongo.service;
 
 import com.argo.springmongo.*;
 import com.argo.springmongo.repository.*;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,13 +11,12 @@ import org.springframework.ui.Model;
 @Service
 public class TaskService {
 
+  private final TaskRepository taskRepository;
+
   @Autowired
-  TaskRepository taskRepository;
-
-  List<Task> deletedTasks = new ArrayList<>();
-  List<Task> taskSamples = new ArrayList<>();
-
-  public Task emptyTask = new Task();
+  public TaskService(TaskRepository taskRepository){
+    this.taskRepository = taskRepository;
+  }
 
   public void clearRepository() {
     taskRepository.deleteAll();
@@ -33,16 +32,7 @@ public class TaskService {
 
   public void requestDeletion(Task task) {
     task.setDeleted(true);
-    deletedTasks.add(task);
     taskRepository.deleteById(task.getId());
-  }
-
-  public void updateModelWithTask(Model model, Task task) {
-    model.addAttribute("id", task.getId());
-    model.addAttribute("text", task.getText());
-    model.addAttribute("priority", task.getPriority());
-    //model.addAttribute("priorityCamel", CaseUtils.toCamelCase(task.getPriority().name(), true));
-    model.addAttribute("notes", task.getNotes());
   }
 
   public List<Task> getOutstanding() {
@@ -67,11 +57,17 @@ public class TaskService {
       "incompleteTasks",
       getOutstanding()
     );
+
+  }
+
+  public Model injectEmptyTaskIntoModel(Model model) {
+    new Task().injectIntoModel(model);
+    return model;
   }
 
   // Samples
 
-  public void createSamples() {
+  public void createAndSaveSamples() {
     Task bins = new Task("Take the bins out");
     Task tax = new Task("Apply for wfh tax rebate", PriorityType.TOP);
     Task homework = new Task("Write an essay", PriorityType.TOP);
@@ -80,21 +76,8 @@ public class TaskService {
     Task lunch = new Task("Eat lunch", PriorityType.HIGH);
     tax.setNotes("You can apply online to have your tax code changed");
     tax.complete();
-
-    taskSamples.clear();
-
-    taskSamples.add(bins);
-    taskSamples.add(tax);
-    taskSamples.add(homework);
-    taskSamples.add(cleanup);
-    taskSamples.add(exercise);
-    taskSamples.add(lunch);
-  }
-
-  public void saveSamples() {
-    for (Task taskSample : taskSamples) {
-      taskRepository.save(taskSample);
-    }
+  
+    taskRepository.saveAll(Arrays.asList(new Task[]{bins, tax, homework, cleanup, exercise, lunch}));
   }
 
 }

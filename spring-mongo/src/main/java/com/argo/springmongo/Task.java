@@ -4,6 +4,7 @@ import java.util.Date;
 import lombok.Data;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.ui.Model;
 
 @Data
 public class Task {
@@ -49,4 +50,13 @@ public class Task {
     this.completed = true;
     this.completedDate = new Date();
   }
+
+  public Model injectIntoModel(Model model) {
+    model.addAttribute("id", this.id);
+    model.addAttribute("text", this.text);
+    model.addAttribute("priority", this.priority);
+    model.addAttribute("notes", this.notes);
+    return model;
+  }
+
 }
