@@ -4,13 +4,13 @@ import com.argo.springmongo.*;
 import com.argo.springmongo.repository.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 @Service
 public class TaskService {
@@ -36,8 +36,19 @@ public class TaskService {
   }
 
   public void requestDeletion(Task task) {
-    task.setDeleted(true);
     taskRepository.deleteById(task.getId());
+  }
+
+  public void requestDeletion(String id) {
+    taskRepository.deleteById(id);
+  }
+
+  public void requestDeletionMany(List<Task> tasks) {
+    taskRepository.deleteAll(tasks);
+  }
+
+  public void requestDeletionManyByid(List<String> ids) {
+    taskRepository.deleteAllById(ids);
   }
 
   public void deleteByCompletedTrueCustom() {
@@ -50,11 +61,6 @@ public class TaskService {
 
   public List<Task> getOutstandingByPriority() {
     return taskRepository.findByCompletedOrderByPriorityDesc(false);
-  }
-
-  public Model injectEmptyTaskIntoModel(Model model) {
-    new Task().injectIntoModel(model);
-    return model;
   }
 
   // Samples

@@ -16,7 +16,6 @@ public class Task {
   private String notes;
   private Boolean completed = false;
   private PriorityType priority = PriorityType.NORMAL;
-  private Boolean deleted = false;
   private Date createdDate;
 
   // Advanced options

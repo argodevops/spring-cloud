@@ -6,7 +6,6 @@ import com.argo.springmongo.service.TaskService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,14 +24,12 @@ public class TaskController {
   }
 
   @GetMapping("")
-  public String taskIndex(Model model) {
-    model.addAttribute("incompleteTasks", taskService.getOutstandingByPriority());
+  public String taskIndex() {
     return "taskHome";
   }
 
   @GetMapping("/add")
-  public String add(Model model) {
-    taskService.injectEmptyTaskIntoModel(model);
+  public String add() {
     return "taskForm";
   }
 
@@ -51,7 +48,7 @@ public class TaskController {
   }
 
   @RequestMapping(value = "/edit", method = RequestMethod.GET)
-  public String edit(Model model, @RequestParam("id") Optional<String> id) {
+  public String edit(@RequestParam("id") Optional<String> id) {
     Task task = taskService.findByid(id.get());
 
     if (!id.isPresent() || task == null) {
@@ -59,8 +56,6 @@ public class TaskController {
       return "redirect:/todo/task?error=1"; // Send to list of all tasks if no id or not task with id
     }
 
-    // Otherwise, fill in the form with the relevant task data
-    task.injectIntoModel(model);
     return "taskForm";
   }
 
