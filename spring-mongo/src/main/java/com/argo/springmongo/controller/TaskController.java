@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/todo/task")
+@RequestMapping("/api/tasks")
 public class TaskController {
 
   private final TaskService taskService;
@@ -66,7 +66,6 @@ public class TaskController {
 
   @GetMapping("/delete")
   public String delete(@RequestParam("id") Optional<String> id) {
-    // TODO: Confirmation dialog for deletion of task with ID
 
     Task task = taskService.findByid(id.get());
 

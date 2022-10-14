@@ -4,6 +4,10 @@ import com.argo.springmongo.*;
 import com.argo.springmongo.repository.*;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -18,6 +22,7 @@ public class TaskService {
     this.taskRepository = taskRepository;
   }
 
+  @PreDestroy
   public void clearRepository() {
     taskRepository.deleteAll();
   }
@@ -47,24 +52,6 @@ public class TaskService {
     return taskRepository.findByCompletedOrderByPriorityDesc(false);
   }
 
-  public void updateModelWithFilteredTasks(Model model) {
-    model.addAttribute("allTasks", taskRepository.findAll());
-
-    model.addAttribute("orderPriority", taskRepository.findByOrderByPriority());
-
-    model.addAttribute(
-      "topPriority",
-      taskRepository.findByPriority(PriorityType.TOP)
-    );
-
-    model.addAttribute(
-      "incompleteTasks",
-      getOutstanding()
-    );
-
-    model.addAttribute("hasNotes", taskRepository.findByHasNotesCustom());
-  }
-
   public Model injectEmptyTaskIntoModel(Model model) {
     new Task().injectIntoModel(model);
     return model;
@@ -72,6 +59,7 @@ public class TaskService {
 
   // Samples
 
+  @PostConstruct
   public void createAndSaveSamples() {
     Task bins = new Task("Take the bins out");
     Task tax = new Task("Apply for wfh tax rebate", PriorityType.TOP);
