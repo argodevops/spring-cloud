@@ -1,1 +1,0 @@
-console.debug("JavaScript is working");
