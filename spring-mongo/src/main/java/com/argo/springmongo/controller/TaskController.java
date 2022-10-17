@@ -1,41 +1,77 @@
 package com.argo.springmongo.controller;
 
 import com.argo.springmongo.*;
-import com.argo.springmongo.PriorityType;
 import com.argo.springmongo.service.TaskService;
+import java.util.List;
 import java.util.Optional;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+// TODO: get logger working
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
   private final TaskService taskService;
+  private static Logger logger = LoggerFactory.getLogger(TaskController.class);
 
   @Autowired
   public TaskController(TaskService taskService) {
     this.taskService = taskService;
   }
 
-  @GetMapping("")
-  public String taskIndex() {
-    return "taskHome";
+  public void p(String t) {
+    System.out.println(t);
   }
 
-  @GetMapping("/add")
-  public String add() {
-    return "taskForm";
+  @RequestMapping(value = "", method = RequestMethod.GET)
+  public ResponseEntity<List<Task>> get() {
+    return ResponseEntity.ok(taskService.getAll());
   }
+
+  @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+  public ResponseEntity<Task> get(@PathVariable String id) {
+    Task task = taskService.getByid(id);
+    logger.debug("Searched for task" + id + " and the result is:");
+    logger.debug(String.valueOf(task));
+
+    p("Searched for task " + id + " and the result is:");
+    p(String.valueOf(task));
+    p("It's only normal print working and not logger");
+
+    if (task != null) {
+      return ResponseEntity.ok(task);
+    }
+    return ResponseEntity.notFound().build();
+  }
+
+  @RequestMapping(value = "", method = RequestMethod.POST)
+  public List<Task> add(@RequestBody List<Task> tasks) {
+    if (taskService.validate(tasks));
+    {
+      taskService.save(tasks);
+      return (tasks);
+    }
+  }
+
+  @RequestMapping(value = "/{id}/complete", method = RequestMethod.POST)
+  public ResponseEntity<Task> complete(@PathVariable String id) {
+    Task task = taskService.getByid(id);
+    if (task != null) {
+      taskService.complete(task);
+      return ResponseEntity.ok(task);
+    }
+    return ResponseEntity.notFound().build();
+  }
+
+  // Former methods
 
   @RequestMapping(value = "/complete", method = RequestMethod.GET)
   public String complete(@RequestParam("id") Optional<String> id) {
-    Task task = taskService.findByid(id.get());
+    Task task = taskService.getByid(id.get());
 
     if (!id.isPresent() || task == null) {
       System.out.println("ERROR: Couldn't find the task to complete");
@@ -49,7 +85,7 @@ public class TaskController {
 
   @RequestMapping(value = "/edit", method = RequestMethod.GET)
   public String edit(@RequestParam("id") Optional<String> id) {
-    Task task = taskService.findByid(id.get());
+    Task task = taskService.getByid(id.get());
 
     if (!id.isPresent() || task == null) {
       System.out.println("ERROR: Couldn't find the task to edit");
@@ -61,8 +97,7 @@ public class TaskController {
 
   @GetMapping("/delete")
   public String delete(@RequestParam("id") Optional<String> id) {
-
-    Task task = taskService.findByid(id.get());
+    Task task = taskService.getByid(id.get());
 
     if (!id.isPresent() || task == null) {
       System.out.println("ERROR: Couldn't find the task to delete");
@@ -74,7 +109,7 @@ public class TaskController {
   }
 
   @PostMapping("/handle")
-  public String handleForm(// Can't I just request a response of type Task ?
+  public String handleForm( // Can't I just request a response of type Task ?
     @RequestParam("id") Optional<String> id,
     @RequestParam("text") Optional<String> text,
     @RequestParam("priority") Optional<String> priority,
@@ -85,7 +120,7 @@ public class TaskController {
       return "redirect:/todo/task?error=4";
     }
 
-    Task task = taskService.findByid(id.get());
+    Task task = taskService.getByid(id.get());
 
     if (task == null) {
       // Create
@@ -98,8 +133,10 @@ public class TaskController {
       PriorityType priorityType = PriorityType.valueOf(formPriorityType);
       System.out.println("Enum valueOf is: " + priorityType);
       task.setPriority(priorityType);
-    } catch(Exception e) {
-      System.out.println("Could not match priority type; it was: " + formPriorityType);
+    } catch (Exception e) {
+      System.out.println(
+        "Could not match priority type; it was: " + formPriorityType
+      );
     }
     task.setNotes(notes.get());
     taskService.save(task);

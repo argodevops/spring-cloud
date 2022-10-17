@@ -1,7 +1,9 @@
 package com.argo.springmongo.repository;
 
 import com.argo.springmongo.*;
+
 import java.util.List;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

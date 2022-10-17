@@ -4,7 +4,6 @@ import com.argo.springmongo.*;
 import com.argo.springmongo.repository.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -27,14 +26,63 @@ public class TaskService {
     taskRepository.deleteAll();
   }
 
-  public Task findByid(String id) {
-    return taskRepository.findByid(id);
-  }
-
   public void save(Task task) {
     taskRepository.save(task);
   }
 
+  public void save(List<Task> tasks) {
+    taskRepository.saveAll(tasks);
+  }
+
+  public Task getByid(String id) {
+    return taskRepository.findByid(id);
+  }
+
+  public List<Task> getAll() {
+    return taskRepository.findAll();
+  }
+
+  public Boolean validate(Task task) {
+    return (task != null && !task.getText().isEmpty());
+  }
+
+  public Boolean validate(List<Task> tasks) {
+    for (Task task : tasks) {
+      if (!validate(task)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public Task fix(Task task) {
+    if (validate(task)) {
+      return new Task(task.getText());
+    }
+    return null;
+  }
+
+  public List<Task> fix(List<Task> tasks) {
+    List<Task> output = Arrays.asList();
+    for (Task task : tasks) {
+      if (validate(task)) {
+        output.add(new Task(task.getText()));
+      }
+    }
+    return output;
+  }
+
+  public void complete(Task task) {
+    task.complete();
+    taskRepository.save(task);
+  }
+
+  public void complete(List<Task> tasks) {
+    for (Task task : tasks) {
+      complete(task);
+    }
+  }
+  
   public void requestDeletion(Task task) {
     taskRepository.deleteById(task.getId());
   }
