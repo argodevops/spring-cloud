@@ -105,7 +105,7 @@ public class TaskController {
   }
 
   @DeleteMapping(value = "")
-  public ResponseEntity delete() {
+  public ResponseEntity<HttpStatus> delete() {
     Boolean authorised = true;
     // TODO: add authorisation
     if (authorised) {
@@ -132,84 +132,13 @@ public class TaskController {
 
   // Former methods
 
-  @RequestMapping(value = "/complete", method = RequestMethod.GET)
-  public String complete(@RequestParam("id") Optional<String> id) {
-    Task task = taskService.getByid(id.get());
-
-    if (!id.isPresent() || task == null) {
-      System.out.println("ERROR: Couldn't find the task to complete");
-      return "redirect:/todo/task?error=3";
+  @DeleteMapping("/completed")
+  public ResponseEntity<HttpStatus> deleteCompleted() {
+    Boolean authorised = true;
+    if (authorised) {
+      taskService.deleteByCompletedTrueCustom();
+      return ResponseEntity.ok().build();
     }
-
-    task.complete();
-    taskService.save(task);
-    return "redirect:/todo/task?success=3"; // success 3: task completed
-  }
-
-  @RequestMapping(value = "/edit", method = RequestMethod.GET)
-  public String edit(@RequestParam("id") Optional<String> id) {
-    Task task = taskService.getByid(id.get());
-
-    if (!id.isPresent() || task == null) {
-      System.out.println("ERROR: Couldn't find the task to edit");
-      return "redirect:/todo/task?error=1"; // Send to list of all tasks if no id or not task with id
-    }
-
-    return "taskForm";
-  }
-
-  @GetMapping("/delete")
-  public String delete(@RequestParam("id") Optional<String> id) {
-    Task task = taskService.getByid(id.get());
-
-    if (!id.isPresent() || task == null) {
-      System.out.println("ERROR: Couldn't find the task to delete");
-      return "redirect:/todo/task?error=2";
-    }
-
-    taskService.requestDeletion(task);
-    return "redirect:/todo/task?success=2"; // success 2: task deleted successfully
-  }
-
-  @PostMapping("/handle")
-  public String handleForm( // Can't I just request a response of type Task ?
-    @RequestParam("id") Optional<String> id,
-    @RequestParam("text") Optional<String> text,
-    @RequestParam("priority") Optional<String> priority,
-    @RequestParam("notes") Optional<String> notes
-  ) {
-    if (!text.isPresent() || text.get().trim().isEmpty()) {
-      System.out.println("No text passed from taskForm");
-      return "redirect:/todo/task?error=4";
-    }
-
-    Task task = taskService.getByid(id.get());
-
-    if (task == null) {
-      // Create
-      task = new Task(text.get());
-    }
-    // TODO: convert priority to enum
-    //task.setPriority(null);
-    String formPriorityType = priority.get().toUpperCase();
-    try {
-      PriorityType priorityType = PriorityType.valueOf(formPriorityType);
-      System.out.println("Enum valueOf is: " + priorityType);
-      task.setPriority(priorityType);
-    } catch (Exception e) {
-      System.out.println(
-        "Could not match priority type; it was: " + formPriorityType
-      );
-    }
-    task.setNotes(notes.get());
-    taskService.save(task);
-
-    return "redirect:/todo/task?success=1"; // success 1: create or update successful ("task saved successfully")
-  }
-
-  @GetMapping("/deleteCompleted")
-  public String deleteCompleted() {
-    taskService.deleteByCompletedTrueCustom();
-    return "redirect:/todo/task?success=4"; // success 4: successfully deleted completed tasks using custom query
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 }
