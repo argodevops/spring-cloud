@@ -50,11 +50,10 @@ public class TaskController {
 
   @RequestMapping(value = "", method = RequestMethod.POST)
   public List<Task> add(@RequestBody List<Task> tasks) {
-    if (taskService.validate(tasks));
-    {
+    if (taskService.validate(tasks)) {
       taskService.save(tasks);
-      return (tasks);
     }
+    return tasks;
   }
 
   @RequestMapping(value = "/{id}/complete", method = RequestMethod.POST)

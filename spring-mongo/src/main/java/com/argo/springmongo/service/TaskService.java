@@ -65,7 +65,7 @@ public class TaskService {
   public List<Task> fix(List<Task> tasks) {
     List<Task> output = Arrays.asList();
     for (Task task : tasks) {
-      if (validate(task)) {
+      if (Boolean.TRUE.equals(validate(task))) {
         output.add(new Task(task.getText()));
       }
     }
@@ -124,7 +124,7 @@ public class TaskService {
     tax.setNotes("You can apply online to have your tax code changed");
     tax.complete();
   
-    taskRepository.saveAll(Arrays.asList(new Task[]{bins, tax, homework, cleanup, exercise, lunch}));
+    taskRepository.saveAll(Arrays.asList(bins, tax, homework, cleanup, exercise, lunch));
   }
 
 }
