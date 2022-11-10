@@ -15,8 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+// TODO: fix or remove Junit
+//import org.testcontainers.junit.jupiter.Container;
+//import org.testcontainers.junit.jupiter.Testcontainers;
 
 @ExtendWith(MockitoExtension.class) // These tests probably actually need a container and repository
 public class TaskServiceTests {
@@ -33,6 +34,7 @@ public class TaskServiceTests {
         assertEquals(Boolean.TRUE, testTaskService.validate(testTask));
     }
 
+    @Test
     void testValidateInvalidTask() {
         Task nullTextTask = new Task();
         Task emptyTextTask = new Task("");
