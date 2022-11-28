@@ -5,8 +5,15 @@ import java.util.Random;
 
 public class Demonstration {
     
-    public static void main(String[] args){
-
+    public static void main(){
+        WhatIsJava();
+        JavaBasics();
+        JavaElements();
+        Operator();
+        WorkWithStrings();
+        RandomAndMath();
+        DecisionStatements("Kirk");
+        LoopingStatements();
     }
 
     private static void p(String text) {
@@ -89,7 +96,7 @@ public class Demonstration {
         p(String.format("An empty initialised String exists: %b", new String()));
     }
 
-    public void RandomAndMath() {
+    public static void RandomAndMath() {
         Random r = new Random();
         r.setSeed(r.nextLong());
         double normalDist = r.nextGaussian(r.nextDouble(), r.nextDouble());
@@ -120,7 +127,7 @@ public class Demonstration {
         String string2 = new String("equality");
         String string3 = null;
         String string4 = string3;
-        string3 = "That these things are equal is %d";
+        string3 = "That these things are equal is %b";
 
         p(String.format(string3, string1 == string2));
         p(String.format(string3, String.valueOf(string1) == String.valueOf(string2)));
